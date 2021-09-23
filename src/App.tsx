@@ -1,44 +1,22 @@
 import React, {
-  useEffect,
-  useState,
-  FunctionComponent,
-  useCallback,
+  FunctionComponent, useEffect,
+  useState
 } from "react";
+import { Contract } from "web3-eth-contract";
 import { useWeb3Context } from "web3-react";
 import { Web3Context } from "web3-react/dist/context";
-import styles from "./styles/App.module.scss";
-import { icons } from "./themes";
-import { Contract } from "web3-eth-contract";
+import { TabsComponent } from "./components/Tabs";
 import { TOKEN_CONTRACT_ADDRESS } from "./constant";
 import { minABI } from "./constant/erc20usdt_abi";
-import {fromWei} from "web3-utils";
-import {OtherBalanceOf} from './components/OtherBalanceOf'
-import {SendERC20} from './components/SendERC20';
-import { Tabs } from "antd";
-import { TabsComponent } from "./components/Tabs";
-import _ from 'lodash'
-const { TabPane } = Tabs;
+import styles from "./styles/App.module.scss";
+import { icons } from "./themes";
 
 interface AppProps {}
 
 export const App: FunctionComponent<AppProps> = () => {
   const context: Web3Context = useWeb3Context();
   const [contract, setContract] = useState({} as Contract);
-  const [balanceOfMyAccount, setBalanceOfMyAccount] = useState('');
-  const [balanceOfOther, setBalanceOfOther] = useState('');
-  const [isLoading , setIsLoading] = useState(false);
 
-  const getBalanceOf = useCallback(async ( from = context.account , isOther = false) => {
-    if (contract) {
-      const value = await contract.methods.balanceOf(from).call({ from });
-      const amount = fromWei(value , 'ether');
-      if(isOther){
-        setBalanceOfOther(amount)
-      }else {
-      setBalanceOfMyAccount(amount);
-      }
-    }
-  }, [contract , context.account]);
 
   // const sendUrc20 = useCallback(
   //   async () => {
@@ -73,13 +51,10 @@ export const App: FunctionComponent<AppProps> = () => {
     }
   }, [context]);
 
-  useEffect(() => {
-    getBalanceOf();
-  }, [getBalanceOf]);
 
-    // useEffect(() => {
-    //   sendUrc20();
-    // }, [sendUrc20]);
+  // useEffect(() => {
+  //   sendUrc20();
+  // }, [sendUrc20]);
 
   return (
     <div className={styles.App}>
@@ -89,7 +64,7 @@ export const App: FunctionComponent<AppProps> = () => {
           className={styles.App__header__logo}
           alt="logo"
         />
-        <TabsComponent context={context}/>
+        <TabsComponent context={context} contract={contract}/>
 
         {/* <p>Account connected : {context?.account}</p>
         <span>My balance of : {balanceOfMyAccount}</span>

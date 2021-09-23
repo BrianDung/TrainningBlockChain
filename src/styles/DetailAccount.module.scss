@@ -1,4 +1,17 @@
 .detailAccount {
-    text-align: left;
-    margin-left: 3vw;
+  text-align: left;
+  margin-left: 3vw;
+}
+
+.otherBalanceOf {
+  text-align: left;
+
+  &__wapperInput {
+    :global {
+      .ant-form-item-label > label {
+        color: white;
+        font-size: 16px;
+      }
+    }
+  }
 }
