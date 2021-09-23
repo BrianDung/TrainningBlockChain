@@ -7,13 +7,14 @@ import React, {
 import { Tabs } from "antd";
 import styles from "../styles/Tabs.module.scss";
 import "antd/dist/antd.css";
-import { InfoCircleOutlined , NumberOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined , NumberOutlined , SendOutlined} from "@ant-design/icons";
 import { Web3Context } from "web3-react/dist/context";
 import { DetailAccount } from "./ContentTab/DetailAccount";
 import { Contract } from "web3-eth-contract";
 import _ from 'lodash'
 import { fromWei } from "web3-utils";
 import { OrtherBalanceOf } from "./ContentTab/OrtherBalanceOf";
+import { SendERC20 } from "../components/ContentTab/SendERC20";
 
 const { TabPane } = Tabs;
 
@@ -72,13 +73,18 @@ export const TabsComponent: FunctionComponent<TabsComponentProps> = ({
           }
           key="2"
         >
-          <OrtherBalanceOf
-            context={context}
-            contract={contract}
-          />
+          <OrtherBalanceOf context={context} contract={contract} />
         </TabPane>
-        <TabPane tab="Tab 3" key="3">
-          Content of Tab Pane 3
+        <TabPane
+          tab={
+            <span>
+              <SendOutlined />
+              Send ERC-20 Tokens
+            </span>
+          }
+          key="3"
+        >
+          <SendERC20 context={context} contract={contract} />
         </TabPane>
       </Tabs>
     </div>

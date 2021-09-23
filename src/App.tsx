@@ -17,23 +17,6 @@ export const App: FunctionComponent<AppProps> = () => {
   const context: Web3Context = useWeb3Context();
   const [contract, setContract] = useState({} as Contract);
 
-
-  // const sendUrc20 = useCallback(
-  //   async () => {
-  //     if(contract){
-  //       const tranfered = await contract.methods
-  //         .transfer(
-  //           "0x9c858484b4d35F0161d55a6D0dcE40204D459ef7",
-  //           `${10 * Math.pow(10, 18)}`
-  //         )
-  //         .send({ from: context.account, value: `${10 * Math.pow(10, 18)}` });
-  //         debugger;
-  //       console.log("tranfered", tranfered);
-  //     }
-  //   },
-  //   [contract, context.account],
-  // )
-
   useEffect(() => {
     context.setFirstValidConnector(["MetaMask", "Infura"]);
   }, [context]);
@@ -51,11 +34,6 @@ export const App: FunctionComponent<AppProps> = () => {
     }
   }, [context]);
 
-
-  // useEffect(() => {
-  //   sendUrc20();
-  // }, [sendUrc20]);
-
   return (
     <div className={styles.App}>
       <header className={styles.App__header}>
@@ -65,14 +43,6 @@ export const App: FunctionComponent<AppProps> = () => {
           alt="logo"
         />
         <TabsComponent context={context} contract={contract}/>
-
-        {/* <p>Account connected : {context?.account}</p>
-        <span>My balance of : {balanceOfMyAccount}</span>
-        <OtherBalanceOf
-          getBalanceOf={getBalanceOf}
-          balanceOfOther={balanceOfOther}
-        />
-        <SendERC20 sendUrc20={sendUrc20} success={isLoading} /> */}
       </header>
     </div>
   );
