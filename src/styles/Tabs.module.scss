@@ -1,0 +1,15 @@
+.tabs {
+  width: 100%;
+  padding: 0 10vw;
+  color: white;
+  font-size: 20px;
+  :global {
+    .ant-tabs {
+      font-size: 0.8em;
+      color: white;
+    }
+    .ant-tabs-tab {
+      font-size: 1em;
+    }
+  }
+}
