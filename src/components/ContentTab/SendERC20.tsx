@@ -46,13 +46,16 @@ export const SendERC20: FunctionComponent<SendERC20Props> = ({
           from: context.account,
         })
         .then((receipt: any) => {
-          console.log("receipt", receipt);
+          console.log("send success and data receipt", receipt);
           setNameButton("Send");
           setLoading(false);
           message.success("This is a success send ERC-20 token");
         });
     } catch (error: any) {
-      console.log("error", error);
+      console.log("error send", error);
+      setNameButton("Send");
+      setLoading(false);
+      message.error("Account id invalid");
     }
   };
 
@@ -94,6 +97,7 @@ export const SendERC20: FunctionComponent<SendERC20Props> = ({
               placeholder="Amount"
               min={1}
               onChange={onChangeNumber}
+              defaultValue={1}
             />
           </Form.Item>
           <Form.Item label="Send" name="Send">
