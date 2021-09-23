@@ -1,15 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {
+  useEffect,
+  useState,
+  FunctionComponent,
+  useCallback,
+} from "react";
+import { useWeb3Context } from "web3-react";
+import { Web3Context } from "web3-react/dist/context";
+import "./App.css";
+import { icons } from "./themes";
+import { Contract } from "web3-eth-contract";
+import { TOKEN_CONTRACT_ADDRESS } from "./constant";
+import { minABI } from "./constant/erc20usdt_abi";
+import {fromWei} from "web3-utils";
 
-function App() {
+interface AppProps {}
+
+export const App: FunctionComponent<AppProps> = () => {
+  const context: Web3Context = useWeb3Context();
+  const [contract, setContract] = useState(undefined as any);
+  const [balanceOfMyAccount, setBalanceOfMyAccount] = useState('');
+
+  const getBalanceOf = useCallback(async () => {
+    if (contract) {
+      const from = context?.account;
+      const value = await contract.methods.balanceOf(from).call({ from });
+      const amount = fromWei(value , 'ether');
+      setBalanceOfMyAccount(amount);
+    }
+  }, [contract, context.account]);
+
+  useEffect(() => {
+    context.setFirstValidConnector(["MetaMask", "Infura"]);
+  }, [context]);
+
+  useEffect(() => {
+    const { library } = context;
+    if (!!library) {
+      const { eth } = library;
+      const { Contract } = eth;
+      const existContract: Contract = new Contract(
+        minABI,
+        TOKEN_CONTRACT_ADDRESS
+      );
+      setContract(existContract);
+    }
+  }, [context]);
+
+  useEffect(() => {
+    getBalanceOf();
+  }, [getBalanceOf]);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <img src={icons.LogoMetaMask} className="App-logo" alt="logo" />
+        <p>Account connected : {context?.account}</p>
+        <span>Balance of : {balanceOfMyAccount}</span>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -21,6 +67,6 @@ function App() {
       </header>
     </div>
   );
-}
+};
 
 export default App;
