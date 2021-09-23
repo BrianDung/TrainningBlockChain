@@ -12,6 +12,7 @@ import { Contract } from "web3-eth-contract";
 import { TOKEN_CONTRACT_ADDRESS } from "./constant";
 import { minABI } from "./constant/erc20usdt_abi";
 import {fromWei} from "web3-utils";
+import {OtherBalanceOf} from './OtherBalanceOf'
 
 interface AppProps {}
 
@@ -19,15 +20,19 @@ export const App: FunctionComponent<AppProps> = () => {
   const context: Web3Context = useWeb3Context();
   const [contract, setContract] = useState(undefined as any);
   const [balanceOfMyAccount, setBalanceOfMyAccount] = useState('');
+  const [balanceOfOther, setBalanceOfOther] = useState('');
 
-  const getBalanceOf = useCallback(async () => {
+  const getBalanceOf = useCallback(async ( from = context.account , isOther = false) => {
     if (contract) {
-      const from = context?.account;
       const value = await contract.methods.balanceOf(from).call({ from });
       const amount = fromWei(value , 'ether');
+      if(isOther){
+        setBalanceOfOther(amount)
+      }else {
       setBalanceOfMyAccount(amount);
+      }
     }
-  }, [contract, context.account]);
+  }, [contract , context.account]);
 
   useEffect(() => {
     context.setFirstValidConnector(["MetaMask", "Infura"]);
@@ -55,15 +60,11 @@ export const App: FunctionComponent<AppProps> = () => {
       <header className="App-header">
         <img src={icons.LogoMetaMask} className="App-logo" alt="logo" />
         <p>Account connected : {context?.account}</p>
-        <span>Balance of : {balanceOfMyAccount}</span>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <span>My balance of : {balanceOfMyAccount}</span>
+        <OtherBalanceOf
+          getBalanceOf={getBalanceOf}
+          balanceOfOther={balanceOfOther}
+        />
       </header>
     </div>
   );
