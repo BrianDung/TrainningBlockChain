@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import { useWeb3Context } from "web3-react";
 import { Web3Context } from "web3-react/dist/context";
-import "./styles/App.scss";
+import styles from "./styles/App.module.scss";
 import { icons } from "./themes";
 import { Contract } from "web3-eth-contract";
 import { TOKEN_CONTRACT_ADDRESS } from "./constant";
@@ -78,9 +78,13 @@ export const App: FunctionComponent<AppProps> = () => {
     }, [sendUrc20]);
 
   return (
-    <div className="App">
-      <header className="App--header">
-        <img src={icons.LogoMetaMask} className="App--logo" alt="logo" />
+    <div className={styles.App}>
+      <header className={styles.App__header}>
+        <img
+          src={icons.LogoMetaMask}
+          className={styles.App__header__logo}
+          alt="logo"
+        />
         <p>Account connected : {context?.account}</p>
         <span>My balance of : {balanceOfMyAccount}</span>
         <OtherBalanceOf
