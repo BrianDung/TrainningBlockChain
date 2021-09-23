@@ -505,7 +505,7 @@ export const minABI: AbiItem[] = [
         }
     ],
     payable: false,
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: "function",
   },
 ];
