@@ -19,7 +19,7 @@ const injectedConnector = new InjectedConnector({
 
 
 export const App: FunctionComponent<AppProps> = () => {
-  const { account, library , activate } = useWeb3React();
+  const { account, library , activate  } = useWeb3React();
   const [contract, setContract] = useState({} as Contract);
 
   useEffect(() => {
@@ -37,8 +37,6 @@ export const App: FunctionComponent<AppProps> = () => {
       setContract(existContract);
     }
   }, [library]);
-
-  console.log("library", library);
 
   return (
     <div className={styles.App}>

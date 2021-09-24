@@ -3,6 +3,7 @@ import { Button, Form, Input, InputNumber, message } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import { Contract } from "web3-eth-contract";
 import styles from "../../styles/DetailAccount.module.scss";
+import _ from "lodash";
 
 interface SendERC20Props {
   account: string;
@@ -37,19 +38,23 @@ export const SendERC20: FunctionComponent<SendERC20Props> = ({
 
   const sendToken = async () => {
     try {
-      setNameButton("Loading");
-      setLoading(true);
-      await contract.methods
-        .transfer(to, `${amount * Math.pow(10, 18)}`)
-        .send({
-          from: account,
-        })
-        .then((receipt: any) => {
-          console.log("send success and data receipt", receipt);
-          setNameButton("Send");
-          setLoading(false);
-          message.success("This is a success send ERC-20 token");
-        });
+      if (!_.isEmpty(contract)) {
+        setNameButton("Loading");
+        setLoading(true);
+        await contract.methods
+          .transfer(to, `${amount * Math.pow(10, 18)}`)
+          .send({
+            from: account,
+          })
+          .then((receipt: any) => {
+            console.log("send success and data receipt", receipt);
+            setNameButton("Send");
+            setLoading(false);
+            message.success("This is a success send ERC-20 token");
+          });
+      } else {
+        message.info("Metamask not connected");
+      }
     } catch (error: any) {
       console.log("error send", error);
       setNameButton("Send");
@@ -85,6 +90,7 @@ export const SendERC20: FunctionComponent<SendERC20Props> = ({
           <Form.Item
             label="Amount"
             name="Amount"
+            initialValue={1}
             rules={[
               {
                 required: true,
@@ -96,7 +102,6 @@ export const SendERC20: FunctionComponent<SendERC20Props> = ({
               placeholder="Amount"
               min={1}
               onChange={onChangeNumber}
-              defaultValue={1}
             />
           </Form.Item>
           <Form.Item label="Send" name="Send">
