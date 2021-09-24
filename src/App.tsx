@@ -1,10 +1,10 @@
+import { useWeb3React } from "@web3-react/core";
+import { InjectedConnector } from "@web3-react/injected-connector";
 import React, {
   FunctionComponent, useEffect,
   useState
 } from "react";
 import { Contract } from "web3-eth-contract";
-import { useWeb3Context } from "web3-react";
-import { Web3Context } from "web3-react/dist/context";
 import { TabsComponent } from "./components/Tabs";
 import { TOKEN_CONTRACT_ADDRESS } from "./constant";
 import { minABI } from "./constant/erc20usdt_abi";
@@ -13,16 +13,20 @@ import { icons } from "./themes";
 
 interface AppProps {}
 
+const injectedConnector = new InjectedConnector({
+  supportedChainIds: [1, 97],
+});
+
+
 export const App: FunctionComponent<AppProps> = () => {
-  const context: Web3Context = useWeb3Context();
+  const { account, library , activate } = useWeb3React();
   const [contract, setContract] = useState({} as Contract);
 
   useEffect(() => {
-    context.setFirstValidConnector(["MetaMask", "Infura"]);
-  }, [context]);
+     activate(injectedConnector);
+  }, [activate]);
 
   useEffect(() => {
-    const { library } = context;
     if (!!library) {
       const { eth } = library;
       const { Contract } = eth;
@@ -32,7 +36,9 @@ export const App: FunctionComponent<AppProps> = () => {
       );
       setContract(existContract);
     }
-  }, [context]);
+  }, [library]);
+
+  console.log("library", library);
 
   return (
     <div className={styles.App}>
@@ -42,7 +48,7 @@ export const App: FunctionComponent<AppProps> = () => {
           className={styles.App__header__logo}
           alt="logo"
         />
-        <TabsComponent context={context} contract={contract}/>
+        <TabsComponent account={account as string} contract={contract} />
       </header>
     </div>
   );

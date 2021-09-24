@@ -2,16 +2,15 @@ import { RightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, message } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import { Contract } from "web3-eth-contract";
-import { Web3Context } from "web3-react/dist/context";
 import styles from "../../styles/DetailAccount.module.scss";
 
 interface SendERC20Props {
-  context: Web3Context;
+  account: string;
   contract: Contract;
 }
 
 export const SendERC20: FunctionComponent<SendERC20Props> = ({
-  context,
+  account,
   contract,
 }) => {
   const [nameButton, setNameButton] = useState("Send");
@@ -43,7 +42,7 @@ export const SendERC20: FunctionComponent<SendERC20Props> = ({
       await contract.methods
         .transfer(to, `${amount * Math.pow(10, 18)}`)
         .send({
-          from: context.account,
+          from: account,
         })
         .then((receipt: any) => {
           console.log("send success and data receipt", receipt);

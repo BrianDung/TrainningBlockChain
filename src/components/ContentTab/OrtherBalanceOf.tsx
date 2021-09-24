@@ -1,19 +1,18 @@
 import { Form, Input } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import { Contract } from "web3-eth-contract";
-import { Web3Context } from "web3-react/dist/context";
 import { fromWei } from "web3-utils";
 import styles from "../../styles/DetailAccount.module.scss";
 
 interface OrtherBalanceOfProps {
-  context: Web3Context;
+  account: string;
   contract: Contract;
 }
 
 const { Search } = Input;
 
 export const OrtherBalanceOf: FunctionComponent<OrtherBalanceOfProps> = ({
-  context,
+  account,
   contract,
 }) => {
   const [balanceOf, setBalanceOf] = useState("");
@@ -23,7 +22,7 @@ export const OrtherBalanceOf: FunctionComponent<OrtherBalanceOfProps> = ({
     try {
       contract.methods
         .balanceOf(value)
-        .call({ from: context.account })
+        .call({ from: account })
         .then((result: string) => {
           const amount = fromWei(result, "ether");
           setBalanceOf(amount);

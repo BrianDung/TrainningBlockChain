@@ -1,43 +1,52 @@
+import {
+  ApiOutlined,
+  InfoCircleOutlined,
+  NumberOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
+import { Tabs } from "antd";
+import "antd/dist/antd.css";
+import _ from "lodash";
 import React, {
   FunctionComponent,
-  useState,
   useCallback,
   useEffect,
+  useState,
 } from "react";
-import { Tabs } from "antd";
-import styles from "../styles/Tabs.module.scss";
-import "antd/dist/antd.css";
-import { InfoCircleOutlined , NumberOutlined , SendOutlined} from "@ant-design/icons";
-import { Web3Context } from "web3-react/dist/context";
-import { DetailAccount } from "./ContentTab/DetailAccount";
 import { Contract } from "web3-eth-contract";
-import _ from 'lodash'
 import { fromWei } from "web3-utils";
-import { OrtherBalanceOf } from "./ContentTab/OrtherBalanceOf";
 import { SendERC20 } from "../components/ContentTab/SendERC20";
+import styles from "../styles/Tabs.module.scss";
+import { DetailAccount } from "./ContentTab/DetailAccount";
+import { OrtherBalanceOf } from "./ContentTab/OrtherBalanceOf";
+import { WelletCollect } from "./ContentTab/WelletCollect";
 
 const { TabPane } = Tabs;
 
 interface TabsComponentProps {
-  context: Web3Context;
+  account: string;
   contract: Contract;
 }
 
 export const TabsComponent: FunctionComponent<TabsComponentProps> = ({
-  context, contract
+  account,
+  contract,
 }) => {
   const [balanceOfMyAccount, setBalanceOfMyAccount] = useState("");
 
-  const getBalanceOf = useCallback(
-    async (from = context.account) => {
-      if (!_.isEmpty(contract)) {
-        const value = await contract.methods.balanceOf(from).call({ from });
+  const getBalanceOf = useCallback(async () => {
+    if (!_.isEmpty(contract)) {
+      try {
+        const value = await contract.methods
+          .balanceOf(account)
+          .call({ from: account });
         const amount = fromWei(value, "ether");
-          setBalanceOfMyAccount(amount);
-        }
-      },
-    [contract, context.account]
-  );
+        setBalanceOfMyAccount(amount);
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+  }, [contract, account]);
 
   useEffect(() => {
     getBalanceOf();
@@ -59,10 +68,7 @@ export const TabsComponent: FunctionComponent<TabsComponentProps> = ({
           }
           key="1"
         >
-          <DetailAccount
-            accountId={context.account as string}
-            balanceOf={balanceOfMyAccount}
-          />
+          <DetailAccount accountId={account} balanceOf={balanceOfMyAccount} />
         </TabPane>
         <TabPane
           tab={
@@ -73,7 +79,7 @@ export const TabsComponent: FunctionComponent<TabsComponentProps> = ({
           }
           key="2"
         >
-          <OrtherBalanceOf context={context} contract={contract} />
+          <OrtherBalanceOf account={account} contract={contract} />
         </TabPane>
         <TabPane
           tab={
@@ -84,7 +90,18 @@ export const TabsComponent: FunctionComponent<TabsComponentProps> = ({
           }
           key="3"
         >
-          <SendERC20 context={context} contract={contract} />
+          <SendERC20 account={account} contract={contract} />
+        </TabPane>
+        <TabPane
+          tab={
+            <span>
+              <ApiOutlined />
+              Wallet connect
+            </span>
+          }
+          key="4"
+        >
+          <WelletCollect account={account} />
         </TabPane>
       </Tabs>
     </div>
