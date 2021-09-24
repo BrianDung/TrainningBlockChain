@@ -17,7 +17,6 @@ const injectedConnector = new InjectedConnector({
   supportedChainIds: [1, 97],
 });
 
-
 export const App: FunctionComponent<AppProps> = () => {
   const { account, library , activate  } = useWeb3React();
   const [contract, setContract] = useState({} as Contract);
